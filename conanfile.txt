@@ -1,7 +1,0 @@
-[requires]
-openvr/1.14.15
-vulkan-headers/1.2.154.0
-qt/5.15.2@bincrafters/stable
-
-[generators]
-cmake

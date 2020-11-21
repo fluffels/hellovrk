@@ -3802,3 +3802,13 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
+int
+WinMain(
+    HINSTANCE instance,
+    HINSTANCE prevInstance,
+    LPSTR commandLine,
+    int showCommand
+) {
+	return main(0, nullptr);
+}
