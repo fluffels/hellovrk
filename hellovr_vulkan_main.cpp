@@ -468,8 +468,8 @@ CMainApplication::CMainApplication( int argc, char *argv[] )
 	, m_nCompanionWindowHeight( 320 )
 	, m_pHMD( NULL )
 	, m_pRenderModels( NULL )
-	, m_bDebugVulkan( false )
-	, m_bVerbose( false )
+	, m_bDebugVulkan( true )
+	, m_bVerbose( true )
 	, m_bPerf( false )
 	, m_bVblank( false )
 	, m_nMSAASampleCount( 4 )
@@ -801,6 +801,7 @@ bool CMainApplication::BInitVulkanInstance()
 			"VK_LAYER_LUNARG_object_tracker",
 			"VK_LAYER_LUNARG_image",
 			"VK_LAYER_LUNARG_core_validation",
+			"VK_LAYER_KHRONOS_validation",
 			"VK_LAYER_LUNARG_swapchain"
 		};
 	
@@ -1803,7 +1804,7 @@ bool CMainApplication::CreateAllShaders()
 		for ( int32_t nStage = 0; nStage <= 1; nStage++ )
 		{
 			char shaderFileName[ 1024 ];
-			sprintf( shaderFileName, "../shaders/%s_%s.spv", pShaderNames[ nShader ], pStageNames[ nStage ] );
+			sprintf( shaderFileName, "../../shaders/%s_%s.spv", pShaderNames[ nShader ], pStageNames[ nStage ] );
 			std::string shaderPath =  Path_MakeAbsolute( shaderFileName, sExecutableDirectory );
 
 			FILE *fp = fopen( shaderPath.c_str(), "rb" );
@@ -2096,13 +2097,16 @@ void CMainApplication::CreateAllDescriptorSets()
 		writeDescriptorSets[ 1 ].dstSet = m_pDescriptorSets[ DESCRIPTOR_SET_LEFT_EYE_SCENE + nEye ];
 		writeDescriptorSets[ 1 ].dstBinding = 1;
 		writeDescriptorSets[ 1 ].descriptorCount = 1;
+		// this one
 		writeDescriptorSets[ 1 ].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+		// view is null handle
 		writeDescriptorSets[ 1 ].pImageInfo = &imageInfo;
 		writeDescriptorSets[ 2 ].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
 		writeDescriptorSets[ 2 ].dstSet = m_pDescriptorSets[ DESCRIPTOR_SET_LEFT_EYE_SCENE + nEye ];
 		writeDescriptorSets[ 2 ].dstBinding = 2;
 		writeDescriptorSets[ 2 ].descriptorCount = 1;
 		writeDescriptorSets[ 2 ].descriptorType = VK_DESCRIPTOR_TYPE_SAMPLER;
+		// invalid sampler
 		writeDescriptorSets[ 2 ].pImageInfo = &samplerInfo;
 		
 		vkUpdateDescriptorSets( m_pDevice, _countof( writeDescriptorSets ), writeDescriptorSets, 0, nullptr );
@@ -2136,7 +2140,7 @@ void CMainApplication::CreateAllDescriptorSets()
 bool CMainApplication::SetupTexturemaps()
 {
 	std::string sExecutableDirectory = Path_StripFilename( Path_GetExecutablePath() );
-	std::string strFullPath = Path_MakeAbsolute( "../cube_texture.png", sExecutableDirectory );
+	std::string strFullPath = Path_MakeAbsolute( "../../cube_texture.png", sExecutableDirectory );
 	
 	std::vector< unsigned char > imageRGBA;
 	unsigned nImageWidth, nImageHeight;
